@@ -7,7 +7,13 @@
         public NetNodeEditor()
         {
             InitializeComponent();
-            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+
+            this.SetStyle(ControlStyles.UserPaint, true);
+            this.SetStyle(ControlStyles.ResizeRedraw, true);
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            this.SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+
             this.Paint += NetNodeEditor_Paint;
             DrawingTools = new DrawingTools()
             {
@@ -38,6 +44,35 @@
             Nodes.Add(node);
             this.Invalidate();
             //this.Refresh();
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+            for (int i = 0; i < Nodes.Count; i++)
+            {
+                Nodes[i].OnMouseDown(e);
+            }
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+            for (int i = 0; i < Nodes.Count; i++)
+            {
+                Nodes[i].OnMouseUp(e);
+            }
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+
+            base.OnMouseMove(e);
+            for (int i = 0; i < Nodes.Count; i++)
+            {
+                Nodes[i].OnMouseMove(e);
+            }
+            this.Invalidate();
         }
 
         private void NetNodeEditor_Load(object sender, EventArgs e)

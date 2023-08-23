@@ -73,6 +73,14 @@ namespace NetNodeLib
             }
         }
 
+        private Rectangle NodeRectangle
+        {
+            get
+            {
+                return new Rectangle(this.Left, this.Top, this.Width, this.Height+ this.LineHeight);
+            }
+        }
+
         public void ConnectNodeDot(NodeDot dot1, NodeDot dot2)
         {
             //连接 1,2
@@ -83,13 +91,13 @@ namespace NetNodeLib
         {
             for (int i = 0; i < LeftDots.Count; i++)
             {
-                var dotRect = new Rectangle(Left+2, Top + LineHeight + i * LineHeight+2, DotSize, DotSize);
+                var dotRect = new Rectangle(Left + 2, Top + LineHeight + i * LineHeight + 2, DotSize, DotSize);
                 DrawDot(tools, dotRect);
             }
 
             for (int i = 0; i < RightDots.Count; i++)
             {
-                var dotRect = new Rectangle(Right- DotSize-3, Top + LineHeight + i * LineHeight+2, DotSize, DotSize);
+                var dotRect = new Rectangle(Right - DotSize - 3, Top + LineHeight + i * LineHeight + 2, DotSize, DotSize);
                 DrawDot(tools, dotRect);
             }
         }
@@ -127,7 +135,58 @@ namespace NetNodeLib
 
         }
 
+        internal void OnMouseEnter()
+        {
 
+        }
+
+        internal void OnMouseDown(MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left
+                && NodeRectangle.Contains(e.Location))
+            {
+                _IsSelected = true;
+                _lastMovePoint = Vector2.Zero;
+            }
+        }
+
+        internal void OnMouseUp(MouseEventArgs e)
+        {
+            _IsSelected = false;
+            _lastMovePoint = Vector2.Zero;
+        }
+        private Vector2 _lastMovePoint = Vector2.Zero;
+        internal void OnMouseMove(MouseEventArgs e)
+        {
+            if (!_IsSelected)
+            {
+                return;
+            }
+
+            if (_lastMovePoint == Vector2.Zero)
+            {
+                _lastMovePoint = new Vector2(e.Location.X, e.Location.Y);
+                return;
+            }
+
+            //计算 delta
+            var deltaX = e.Location.X - _lastMovePoint.X;
+            var deltaY = e.Location.Y - _lastMovePoint.Y;
+            Position.X += deltaX;
+            Position.Y += deltaY;
+
+            _lastMovePoint = new Vector2(e.Location.X, e.Location.Y);
+        }
+
+        internal void OnMouseLeave()
+        {
+
+        }
+
+        internal void OnDrag()
+        {
+
+        }
 
     }
 }
