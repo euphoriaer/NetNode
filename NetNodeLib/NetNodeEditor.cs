@@ -24,7 +24,7 @@
             {
                 node.DrawNode(DrawingTools);
                 node.DrawTitle(DrawingTools);
-                node.DrawDot(DrawingTools);
+                node.DrawDots(DrawingTools);
             }
         }
 
@@ -33,9 +33,11 @@
 
         }
 
-        public void CreateNode(NetNode node)
+        public void DrawNode(NetNode node)
         {
             Nodes.Add(node);
+            this.Invalidate();
+            //this.Refresh();
         }
 
         private void NetNodeEditor_Load(object sender, EventArgs e)
