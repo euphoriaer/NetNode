@@ -11,7 +11,7 @@ namespace NetNodeExample
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            NetNode node=new NetNode();
+            NetNode node = new NetNode();
             node.Name = "Root";
             node.LeftDots.Add(new NodeDot());
             node.LeftDots.Add(new NodeDot());
@@ -21,6 +21,17 @@ namespace NetNodeExample
             node.RightDots.Add(new NodeDot());
             node.RightDots.Add(new NodeDot());
             node.RightDots.Add(new NodeDot());
+            node.options.Add(new LineOption());
+            node.options.Add(new LineOption());
+            var op = new LineOption()
+            {
+                Name = "click",
+                Clicked = () =>
+                {
+                    MessageBox.Show("click");
+                },
+            };
+            node.options.Add(op);
             netNodeEditor1.DrawNode(node);
         }
 

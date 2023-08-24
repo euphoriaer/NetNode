@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -53,12 +54,14 @@ namespace NetNodeLib
 
         public List<NodeDot> LeftDots = new List<NodeDot>();
 
+        public List<LineOption> options = new List<LineOption>();
+
         public List<NodeDot> RightDots = new List<NodeDot>();
 
         public NetNode()
         {
             m_sf = new StringFormat();
-            m_sf.Alignment = StringAlignment.Near;
+            m_sf.Alignment = StringAlignment.Center;
             m_sf.LineAlignment = StringAlignment.Center;
             m_sf.FormatFlags = StringFormatFlags.NoWrap;
             m_sf.SetTabStops(0, new float[] { 40 });
@@ -77,7 +80,7 @@ namespace NetNodeLib
         {
             get
             {
-                return new Rectangle(this.Left, this.Top, this.Width, this.Height+ this.LineHeight);
+                return new Rectangle(this.Left, this.Top, this.Width, this.Height + this.LineHeight);
             }
         }
 
@@ -92,7 +95,14 @@ namespace NetNodeLib
             for (int i = 0; i < LeftDots.Count; i++)
             {
                 var dotRect = new Rectangle(Left + 2, Top + LineHeight + i * LineHeight + 2, DotSize, DotSize);
+                var dot = LeftDots[i];
                 DrawDot(tools, dotRect);
+            }
+
+            for (int i = 0; i < options.Count; i++)
+            {
+                var dotRect = new Rectangle(Left + 2, Top + LineHeight + i * LineHeight + 2, DotSize, DotSize);
+                DrawOption(tools, dotRect, options[i]);
             }
 
             for (int i = 0; i < RightDots.Count; i++)
@@ -101,6 +111,28 @@ namespace NetNodeLib
                 DrawDot(tools, dotRect);
             }
         }
+        private void DrawOption(DrawingTools tools, Rectangle dotRectangle, LineOption option, bool isFill = true)
+        {
+            Graphics g = tools.Graphics;
+            Pen pen = tools.Pen;
+            SolidBrush brush = tools.SolidBrush;
+
+            //option 
+            tools.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            var font = new Font("courier new", 10f);
+            var opRect = new Rectangle(dotRectangle.X, dotRectangle.Y - 8, Width, LineHeight);
+            tools.Graphics.DrawString(option.Name, font, brush, opRect, m_sf);
+
+            //click img
+            var imgRect = new Rectangle(Left + Width - dotRectangle.Width * 3, dotRectangle.Y, dotRectangle.Width, dotRectangle.Height);
+            tools.Graphics.FillRectangle(brush, imgRect);
+            option.ClickRect = imgRect;
+            if (option.CustomImg != null)
+            {
+                option?.CustomImg(tools,imgRect);
+            }
+        }
+
 
         private void DrawDot(DrawingTools tools, Rectangle dotRectangle, bool isFill = true)
         {
@@ -108,7 +140,7 @@ namespace NetNodeLib
             Pen pen = tools.Pen;
             SolidBrush brush = tools.SolidBrush;
 
-            //单连接 圆形
+            //圆形连接 
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
             if (isFill)
             {
@@ -125,19 +157,41 @@ namespace NetNodeLib
         {
             SolidBrush brush = drawingTools.SolidBrush;
             drawingTools.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-            var font = new Font("courier new", 8.25f);
+            var font = new Font("courier new", 10f);
             drawingTools.Graphics.DrawString(Name, font, brush, this.TitleRectangle, m_sf);
         }
 
         public void DrawNode(DrawingTools drawingTools)
         {
+            if (IsAutoSize)
+            {
+                var count = LeftDots.Count > RightDots.Count ? LeftDots.Count : RightDots.Count;
+                Height = count * LineHeight;
+
+            }
             drawingTools.Graphics.DrawRectangle(drawingTools.Pen, Left, Top + LineHeight, Width, Height);
+            //line
 
         }
 
         internal void OnMouseEnter()
         {
 
+        }
+
+
+        internal void OnMouseClick(MouseEventArgs e)
+        {
+            for (int i = 0; i < options.Count; i++)
+            {
+                var option = options[i];
+
+                if (option.Clicked!=null
+                    && option.ClickRect.Contains(e.Location))
+                {
+                    option?.Clicked();
+                }
+            }
         }
 
         internal void OnMouseDown(MouseEventArgs e)

@@ -46,6 +46,15 @@
             //this.Refresh();
         }
 
+        protected override void OnMouseClick(MouseEventArgs e)
+        {
+            base.OnMouseClick(e);
+            for (int i = 0; i < Nodes.Count; i++)
+            {
+                NetNode node = Nodes[i];
+                node.OnMouseClick(e);
+            }
+        }
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);

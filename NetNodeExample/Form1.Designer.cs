@@ -37,6 +37,7 @@
             // 
             // netNodeEditor1
             // 
+            netNodeEditor1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             netNodeEditor1.BackColor = SystemColors.AppWorkspace;
             netNodeEditor1.Location = new Point(12, 46);
             netNodeEditor1.Name = "netNodeEditor1";
