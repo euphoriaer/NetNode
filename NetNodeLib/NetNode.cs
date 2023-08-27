@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
@@ -52,12 +53,46 @@ namespace NetNodeLib
 
         public int LineHeight = 30;
 
-        public List<NodeDot> LeftDots = new List<NodeDot>();
+        internal List<NodeDot> LeftDots = new List<NodeDot>();
 
         public List<LineOption> options = new List<LineOption>();
 
-        public List<NodeDot> RightDots = new List<NodeDot>();
+        internal List<NodeDot> RightDots = new List<NodeDot>();
 
+        public NodeDot CreateLeftDot()
+        {
+            //计算坐标
+            var dot = new NodeDot();
+            LeftDots.Add(dot);
+            RefreshDotPoint();
+            return dot;
+        }
+
+        private void RefreshDotPoint()
+        {
+            for (int i = 0; i < LeftDots.Count; i++)
+            {
+                var dotRect = new Rectangle(Left + 2, Top + LineHeight + i * LineHeight + 2, DotSize, DotSize);
+                var dot = LeftDots[i];
+                dot.Point = new Point(dotRect.X, dotRect.Y);
+            }
+
+
+            for (int i = 0; i < RightDots.Count; i++)
+            {
+                var dotRect = new Rectangle(Right - DotSize - 3, Top + LineHeight + i * LineHeight + 2, DotSize, DotSize);
+                var dot = RightDots[i];
+                dot.Point = new Point(dotRect.X, dotRect.Y);
+            }
+
+        }
+        public NodeDot CreateRightDot()
+        {
+            var dot =new NodeDot();
+            RightDots.Add(dot);
+            RefreshDotPoint();
+            return dot;
+        }
         public NetNode()
         {
             m_sf = new StringFormat();
@@ -87,16 +122,65 @@ namespace NetNodeLib
         public void ConnectNodeDot(NodeDot dot1, NodeDot dot2)
         {
             //连接 1,2
+            dot1.Connects.Add(dot2);
+        }
 
+        private float _Curvature = 0.3F;
+        /// <summary>
+        /// 获取或设置 Option 之间连线的曲度
+        /// </summary>
+        [Browsable(false)]
+        public float Curvature
+        {
+            get { return _Curvature; }
+            set
+            {
+                if (value < 0) value = 0;
+                if (value > 1) value = 1;
+                _Curvature = value;
+            }
+        }
+
+        private void DrawBezier(Graphics g, Pen p, float x1, float y1, float x2, float y2, float f)
+        {
+            float n = (Math.Abs(x1 - x2) * f);
+            if (this._Curvature != 0 && n < 30) n = 1;
+            p.Width = 3;
+            g.DrawBezier(p,
+                x1, y1,
+                x1 + n, y1,
+                x2 - n, y2,
+                x2, y2);
         }
 
         public void DrawDots(DrawingTools tools)
         {
+            RefreshDotPoint();
+
             for (int i = 0; i < LeftDots.Count; i++)
             {
                 var dotRect = new Rectangle(Left + 2, Top + LineHeight + i * LineHeight + 2, DotSize, DotSize);
                 var dot = LeftDots[i];
                 DrawDot(tools, dotRect);
+                for (int connectIndex = 0; connectIndex < dot.Connects.Count; connectIndex++)
+                {
+                    var beConnectdot = dot.Connects[connectIndex];
+                    DrawBezier(tools.Graphics, tools.Pen, dot.Point.X + DotSize/2, dot.Point.Y + DotSize / 2, beConnectdot.Point.X + DotSize / 2, beConnectdot.Point.Y + DotSize / 2, Curvature);
+                }
+                
+            }
+
+
+            for (int i = 0; i < RightDots.Count; i++)
+            {
+                var dotRect = new Rectangle(Right - DotSize - 3, Top + LineHeight + i * LineHeight + 2, DotSize, DotSize);
+                var dot = RightDots[i];
+                DrawDot(tools, dotRect);
+                for (int connectIndex = 0; connectIndex < dot.Connects.Count; connectIndex++)
+                {
+                    var beConnectdot = dot.Connects[connectIndex];
+                    DrawBezier(tools.Graphics, tools.Pen, dot.Point.X, dot.Point.Y, beConnectdot.Point.X, beConnectdot.Point.Y, Curvature);
+                }
             }
 
             for (int i = 0; i < options.Count; i++)
@@ -105,11 +189,6 @@ namespace NetNodeLib
                 DrawOption(tools, dotRect, options[i]);
             }
 
-            for (int i = 0; i < RightDots.Count; i++)
-            {
-                var dotRect = new Rectangle(Right - DotSize - 3, Top + LineHeight + i * LineHeight + 2, DotSize, DotSize);
-                DrawDot(tools, dotRect);
-            }
         }
         private void DrawOption(DrawingTools tools, Rectangle dotRectangle, LineOption option, bool isFill = true)
         {

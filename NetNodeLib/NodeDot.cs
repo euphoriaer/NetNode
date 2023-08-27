@@ -8,8 +8,13 @@ namespace NetNodeLib
 {
     public class NodeDot
     {
-        public List<NodeDot> Connects;
-        
+        internal NodeDot() 
+        { 
+        }
+        public PointF Point { get; set; }
+
+        internal List<NodeDot> Connects=new List<NodeDot>();
+
     }
 
     public class LineOption

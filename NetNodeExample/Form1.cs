@@ -13,22 +13,26 @@ namespace NetNodeExample
         {
             NetNode node = new NetNode();
             node.Name = "Root";
-            node.LeftDots.Add(new NodeDot());
-            node.LeftDots.Add(new NodeDot());
-            node.LeftDots.Add(new NodeDot());
-            node.RightDots.Add(new NodeDot());
-            node.RightDots.Add(new NodeDot());
-            node.RightDots.Add(new NodeDot());
-            node.RightDots.Add(new NodeDot());
-            node.RightDots.Add(new NodeDot());
+
+           var dot1= node.CreateLeftDot();
+            node.CreateLeftDot();
+            node.CreateLeftDot();
+            node.CreateRightDot();
+            node.CreateRightDot();
+           var dot2= node.CreateRightDot();
+            node.CreateRightDot();
+            node.CreateRightDot();
+
+
             node.options.Add(new LineOption());
             node.options.Add(new LineOption());
+
             var op = new LineOption()
             {
                 Name = "click",
                 Clicked = () =>
                 {
-                    MessageBox.Show("click");
+                   node.ConnectNodeDot(dot1, dot2);
                 },
             };
             node.options.Add(op);
