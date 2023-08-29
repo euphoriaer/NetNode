@@ -8,8 +8,11 @@ namespace NetNodeLib
 {
     public class NodeDot
     {
-        internal NodeDot() 
-        { 
+        public NetNode NetNode { get; set; }
+
+        internal NodeDot(NetNode node)
+        {
+            NetNode=node;
         }
         public PointF Point { get; set; }
 

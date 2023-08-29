@@ -15,6 +15,8 @@ namespace NetNodeLib
 
         public bool IsAutoSize = true;
 
+        public bool IsShow = true;
+
         /// <summary>
         /// 被点击后处于选中状态，只有被选中状态的才会被移动
         /// </summary>
@@ -62,7 +64,7 @@ namespace NetNodeLib
         public NodeDot CreateLeftDot()
         {
             //计算坐标
-            var dot = new NodeDot();
+            var dot = new NodeDot(this);
             dot.Index = LeftDots.Count;
             LeftDots.Add(dot);
             RefreshDotPoint();
@@ -89,7 +91,7 @@ namespace NetNodeLib
         }
         public NodeDot CreateRightDot()
         {
-            var dot =new NodeDot();
+            var dot =new NodeDot(this);
             dot.Index = RightDots.Count;
             RightDots.Add(dot);
             RefreshDotPoint();
@@ -246,8 +248,9 @@ namespace NetNodeLib
         {
             if (IsAutoSize)
             {
-                var count = LeftDots.Count > RightDots.Count ? LeftDots.Count : RightDots.Count;
-                Height = count * LineHeight;
+                var dotcount = LeftDots.Count > RightDots.Count ? LeftDots.Count : RightDots.Count;
+                var lineOpCount= options.Count > 0 ? options.Count : 0;
+                Height = Math.Max(dotcount,lineOpCount) * LineHeight;
 
             }
             drawingTools.Graphics.DrawRectangle(drawingTools.Pen, Left, Top + LineHeight, Width, Height);

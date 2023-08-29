@@ -57,7 +57,28 @@ namespace NetNodeExample
                     CreateNode(dot2);
                 },
             };
+
+            var HideOp = new LineOption()
+            {
+                Name = "Hide",
+                Clicked = () =>
+                {
+                    netNodeEditor1.HideNode(node);
+                },
+            };
+
+            var DeleteOp = new LineOption()
+            {
+                Name = "Delete",
+                Clicked = () =>
+                {
+                    netNodeEditor1.DeleteNode(node);
+                },
+            };
+
             node.options.Add(op);
+            node.options.Add(HideOp);
+            node.options.Add(DeleteOp);
             node.ConnectNodeDot(rightDot, dot);
             netNodeEditor1.DrawNode(node);
         }
