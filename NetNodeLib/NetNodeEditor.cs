@@ -1,8 +1,13 @@
-﻿namespace NetNodeLib
+﻿using System.Diagnostics;
+using System.Xml.Linq;
+
+namespace NetNodeLib
 {
     public partial class NetNodeEditor : UserControl
     {
         public List<NetNode> Nodes = new List<NetNode>();
+        public List<NetNode> HideNodes = new List<NetNode>();
+        public List<NetNode> DeleteNodes = new List<NetNode>();
         DrawingTools DrawingTools;
         public NetNodeEditor()
         {
@@ -41,9 +46,37 @@
 
         public void DrawNode(NetNode node)
         {
+            if (Nodes.Contains(node))
+            {
+                this.Invalidate();
+                return;
+            }
+            
             Nodes.Add(node);
-            this.Invalidate();
-            //this.Refresh();
+        }
+
+        public bool HideNode(NetNode node)
+        {
+            if (!Nodes.Contains(node))
+            {
+                this.Invalidate();
+                return false;
+            }
+
+            HideNodes.Add(node);//todo 遍历隐藏所有子node
+            return true;
+        }
+
+        public bool DeleteNode(NetNode node)
+        {
+            if (!Nodes.Contains(node))
+            {
+                this.Invalidate();
+                return false;
+            }
+
+            DeleteNodes.Add(node);//todo  遍历删除所有子node
+            return true;
         }
 
         protected override void OnMouseClick(MouseEventArgs e)
@@ -75,12 +108,20 @@
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-
             base.OnMouseMove(e);
             for (int i = 0; i < Nodes.Count; i++)
             {
                 Nodes[i].OnMouseMove(e);
             }
+            //中键移动画布
+            if (e.Button == MouseButtons.Middle)
+            {
+                for (int i = 0; i < Nodes.Count; i++)
+                {
+                    Nodes[i].OnMiddleMove(e);
+                }
+            }
+
             this.Invalidate();
         }
 

@@ -32,12 +32,36 @@ namespace NetNodeExample
                 Name = "click",
                 Clicked = () =>
                 {
-                   node.ConnectNodeDot(dot1, dot2);
+                    CreateNode(dot2);
                 },
             };
             node.options.Add(op);
             netNodeEditor1.DrawNode(node);
         }
+
+        void CreateNode(NodeDot rightDot)
+        {
+            NetNode node = new NetNode();
+            node.Name = "Child";
+            var randomX = Random.Shared.Next(0, 40);
+            var randomY = Random.Shared.Next(-80, 40);
+            node.Position.X=rightDot.Point.X+ randomX;
+            node.Position.Y=rightDot.Point.Y+ randomY;
+            var dot= node.CreateLeftDot();
+            var dot2= node.CreateRightDot();
+            var op = new LineOption()
+            {
+                Name = "click",
+                Clicked = () =>
+                {
+                    CreateNode(dot2);
+                },
+            };
+            node.options.Add(op);
+            node.ConnectNodeDot(rightDot, dot);
+            netNodeEditor1.DrawNode(node);
+        }
+
 
         private void netNodeEditor1_Load(object sender, EventArgs e)
         {

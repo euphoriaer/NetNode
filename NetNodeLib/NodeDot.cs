@@ -13,6 +13,8 @@ namespace NetNodeLib
         }
         public PointF Point { get; set; }
 
+        public int Index;
+
         internal List<NodeDot> Connects=new List<NodeDot>();
 
     }

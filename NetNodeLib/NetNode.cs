@@ -63,6 +63,7 @@ namespace NetNodeLib
         {
             //计算坐标
             var dot = new NodeDot();
+            dot.Index = LeftDots.Count;
             LeftDots.Add(dot);
             RefreshDotPoint();
             return dot;
@@ -89,6 +90,7 @@ namespace NetNodeLib
         public NodeDot CreateRightDot()
         {
             var dot =new NodeDot();
+            dot.Index = RightDots.Count;
             RightDots.Add(dot);
             RefreshDotPoint();
             return dot;
@@ -179,7 +181,7 @@ namespace NetNodeLib
                 for (int connectIndex = 0; connectIndex < dot.Connects.Count; connectIndex++)
                 {
                     var beConnectdot = dot.Connects[connectIndex];
-                    DrawBezier(tools.Graphics, tools.Pen, dot.Point.X, dot.Point.Y, beConnectdot.Point.X, beConnectdot.Point.Y, Curvature);
+                    DrawBezier(tools.Graphics, tools.Pen, dot.Point.X + DotSize / 2, dot.Point.Y + DotSize / 2, beConnectdot.Point.X + DotSize / 2, beConnectdot.Point.Y + DotSize / 2, Curvature);
                 }
             }
 
@@ -296,6 +298,24 @@ namespace NetNodeLib
                 return;
             }
 
+            if (_lastMovePoint == Vector2.Zero)
+            {
+                _lastMovePoint = new Vector2(e.Location.X, e.Location.Y);
+                return;
+            }
+
+            //计算 delta
+            var deltaX = e.Location.X - _lastMovePoint.X;
+            var deltaY = e.Location.Y - _lastMovePoint.Y;
+            Position.X += deltaX;
+            Position.Y += deltaY;
+
+            _lastMovePoint = new Vector2(e.Location.X, e.Location.Y);
+        }
+
+        internal void OnMiddleMove(MouseEventArgs e)
+        {
+        
             if (_lastMovePoint == Vector2.Zero)
             {
                 _lastMovePoint = new Vector2(e.Location.X, e.Location.Y);
