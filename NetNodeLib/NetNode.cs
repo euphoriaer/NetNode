@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace NetNodeLib
 {
-    public class NetNode
+    public class NetNode : IDisposable
     {
         public string Name = "Null";
 
@@ -126,7 +126,7 @@ namespace NetNodeLib
         public void ConnectNodeDot(NodeDot dot1, NodeDot dot2)
         {
             //连接 1,2
-            dot1.Connects.Add(dot2);
+            dot1.AddConnect(dot2);
         }
 
         private float _Curvature = 0.3F;
@@ -166,9 +166,9 @@ namespace NetNodeLib
                 var dotRect = new Rectangle(Left + 2, Top + LineHeight + i * LineHeight + 2, DotSize, DotSize);
                 var dot = LeftDots[i];
                 DrawDot(tools, dotRect);
-                for (int connectIndex = 0; connectIndex < dot.Connects.Count; connectIndex++)
+                for (int connectIndex = 0; connectIndex < dot.GetConnectDots().Count; connectIndex++)
                 {
-                    var beConnectdot = dot.Connects[connectIndex];
+                    var beConnectdot = dot.GetConnectDots()[connectIndex];
                     DrawBezier(tools.Graphics, tools.Pen, dot.Point.X + DotSize/2, dot.Point.Y + DotSize / 2, beConnectdot.Point.X + DotSize / 2, beConnectdot.Point.Y + DotSize / 2, Curvature);
                 }
                 
@@ -180,9 +180,9 @@ namespace NetNodeLib
                 var dotRect = new Rectangle(Right - DotSize - 3, Top + LineHeight + i * LineHeight + 2, DotSize, DotSize);
                 var dot = RightDots[i];
                 DrawDot(tools, dotRect);
-                for (int connectIndex = 0; connectIndex < dot.Connects.Count; connectIndex++)
+                for (int connectIndex = 0; connectIndex < dot.GetConnectDots().Count; connectIndex++)
                 {
-                    var beConnectdot = dot.Connects[connectIndex];
+                    var beConnectdot = dot.GetConnectDots()[connectIndex];
                     DrawBezier(tools.Graphics, tools.Pen, dot.Point.X + DotSize / 2, dot.Point.Y + DotSize / 2, beConnectdot.Point.X + DotSize / 2, beConnectdot.Point.Y + DotSize / 2, Curvature);
                 }
             }
@@ -344,5 +344,36 @@ namespace NetNodeLib
 
         }
 
+        public void Dispose()
+        {
+            CleraDotConnect();
+        }
+
+        private void CleraDotConnect()
+        {
+            for (int i = 0; i < LeftDots.Count; i++)
+            {
+                var dot = LeftDots[i];
+                var beConnects = dot.GetBeConnectDots();
+                for (int j = 0; j < beConnects.Count; j++)
+                {
+                    beConnects[j].RemoveDot(dot);
+                    beConnects[j] = null;
+                }
+                beConnects.Clear();
+            }
+
+            for (int i = 0; i < RightDots.Count; i++)
+            {
+                var dot = RightDots[i];
+                var beConnects = dot.GetBeConnectDots();
+                for (int j = 0; j < beConnects.Count; j++)
+                {
+                    beConnects[j].RemoveDot(dot);
+                    beConnects[j] = null;
+                }
+                beConnects.Clear();
+            }
+        }
     }
 }

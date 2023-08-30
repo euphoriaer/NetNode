@@ -34,7 +34,7 @@ namespace NetNodeLib
 
             for (int i = 0; i < node.RightDots.Count; i++)
             {
-                var connectDots= node.RightDots[i].Connects;
+                var connectDots= node.RightDots[i].GetConnectDots();
                 for (int j = 0; j < connectDots.Count; j++)
                 {
                     var connectNode= connectDots[j].NetNode;
@@ -58,6 +58,7 @@ namespace NetNodeLib
             for (int i = 0; i < DeleteNodes.Count; i++)
             {
                 Nodes.Remove(DeleteNodes[i]);
+                DeleteNodes[i].Dispose();
             }
             DeleteNodes.Clear();
 
