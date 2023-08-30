@@ -5,9 +5,9 @@ namespace NetNodeLib
 {
     public partial class NetNodeEditor : UserControl
     {
-        public List<NetNode> Nodes = new List<NetNode>();
-        public List<NetNode> HideNodes = new List<NetNode>();
-        public List<NetNode> DeleteNodes = new List<NetNode>();
+        internal List<NetNode> Nodes = new List<NetNode>();
+        internal List<NetNode> HideNodes = new List<NetNode>();
+        internal List<NetNode> DeleteNodes = new List<NetNode>();
         DrawingTools DrawingTools;
         public NetNodeEditor()
         {
@@ -101,7 +101,11 @@ namespace NetNodeLib
                 Nodes.Add(showNode);
             }
 
-            Nodes.Add(node);
+            if (!Nodes.Contains(node))
+            {
+                Nodes.Add(node);
+            }
+            
         }
 
         public bool HideNode(NetNode node)
@@ -120,6 +124,36 @@ namespace NetNodeLib
                 HideNodes.Add(hideNode);
             }
 
+            return true;
+        }
+
+        public bool ShowNode(NetNode node)
+        {
+            if (!Nodes.Contains(node))
+            {
+                this.Invalidate();
+                return false;
+            }
+
+            var childrens = GetChildrenNetNode(node);//遍历显示所有子节点
+            for (int i = 0; i < childrens.Count; i++)
+            {
+                var showNode = childrens[i];
+                showNode.IsShow = true;
+                if (HideNodes.Contains(showNode))
+                {
+                    HideNodes.Remove(showNode);
+                }
+                if (!Nodes.Contains(showNode))
+                {
+                    Nodes.Add(showNode);
+                }
+            }
+            node.IsShow = true;
+            if (!Nodes.Contains(node))
+            {
+                Nodes.Add(node);
+            }
             return true;
         }
 

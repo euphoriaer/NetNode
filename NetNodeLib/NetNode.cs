@@ -91,7 +91,7 @@ namespace NetNodeLib
         }
         public NodeDot CreateRightDot()
         {
-            var dot =new NodeDot(this);
+            var dot = new NodeDot(this);
             dot.Index = RightDots.Count;
             RightDots.Add(dot);
             RefreshDotPoint();
@@ -169,9 +169,12 @@ namespace NetNodeLib
                 for (int connectIndex = 0; connectIndex < dot.GetConnectDots().Count; connectIndex++)
                 {
                     var beConnectdot = dot.GetConnectDots()[connectIndex];
-                    DrawBezier(tools.Graphics, tools.Pen, dot.Point.X + DotSize/2, dot.Point.Y + DotSize / 2, beConnectdot.Point.X + DotSize / 2, beConnectdot.Point.Y + DotSize / 2, Curvature);
+                    if (beConnectdot.NetNode.IsShow)
+                    {
+                        DrawBezier(tools.Graphics, tools.Pen, dot.Point.X + DotSize / 2, dot.Point.Y + DotSize / 2, beConnectdot.Point.X + DotSize / 2, beConnectdot.Point.Y + DotSize / 2, Curvature);
+                    }
                 }
-                
+
             }
 
 
@@ -183,7 +186,10 @@ namespace NetNodeLib
                 for (int connectIndex = 0; connectIndex < dot.GetConnectDots().Count; connectIndex++)
                 {
                     var beConnectdot = dot.GetConnectDots()[connectIndex];
-                    DrawBezier(tools.Graphics, tools.Pen, dot.Point.X + DotSize / 2, dot.Point.Y + DotSize / 2, beConnectdot.Point.X + DotSize / 2, beConnectdot.Point.Y + DotSize / 2, Curvature);
+                    if (beConnectdot.NetNode.IsShow)
+                    {
+                        DrawBezier(tools.Graphics, tools.Pen, dot.Point.X + DotSize / 2, dot.Point.Y + DotSize / 2, beConnectdot.Point.X + DotSize / 2, beConnectdot.Point.Y + DotSize / 2, Curvature);
+                    }
                 }
             }
 
@@ -212,7 +218,7 @@ namespace NetNodeLib
             option.ClickRect = imgRect;
             if (option.CustomImg != null)
             {
-                option?.CustomImg(tools,imgRect);
+                option?.CustomImg(tools, imgRect);
             }
         }
 
@@ -249,8 +255,8 @@ namespace NetNodeLib
             if (IsAutoSize)
             {
                 var dotcount = LeftDots.Count > RightDots.Count ? LeftDots.Count : RightDots.Count;
-                var lineOpCount= options.Count > 0 ? options.Count : 0;
-                Height = Math.Max(dotcount,lineOpCount) * LineHeight;
+                var lineOpCount = options.Count > 0 ? options.Count : 0;
+                Height = Math.Max(dotcount, lineOpCount) * LineHeight;
 
             }
             drawingTools.Graphics.DrawRectangle(drawingTools.Pen, Left, Top + LineHeight, Width, Height);
@@ -270,7 +276,7 @@ namespace NetNodeLib
             {
                 var option = options[i];
 
-                if (option.Clicked!=null
+                if (option.Clicked != null
                     && option.ClickRect.Contains(e.Location))
                 {
                     option?.Clicked();

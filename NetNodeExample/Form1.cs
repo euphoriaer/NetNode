@@ -76,8 +76,18 @@ namespace NetNodeExample
                 },
             };
 
+            var ShowOp = new LineOption()
+            {
+                Name = "ShowNode",
+                Clicked = () =>
+                {
+                    netNodeEditor1.ShowNode(node);
+                },
+            };
+
             node.options.Add(op);
             node.options.Add(HideOp);
+            node.options.Add(ShowOp);
             node.options.Add(DeleteOp);
             node.ConnectNodeDot(rightDot, dot);
             netNodeEditor1.DrawNode(node);
