@@ -222,7 +222,6 @@ namespace NetNodeLib
             }
         }
 
-
         private void DrawDot(DrawingTools tools, Rectangle dotRectangle, bool isFill = true)
         {
             Graphics g = tools.Graphics;
@@ -324,7 +323,7 @@ namespace NetNodeLib
 
         internal void OnMiddleMove(MouseEventArgs e)
         {
-        
+
             if (_lastMovePoint == Vector2.Zero)
             {
                 _lastMovePoint = new Vector2(e.Location.X, e.Location.Y);
