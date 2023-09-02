@@ -34,6 +34,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.AppWorkspace;
             Name = "NetNodeEditor";
             Size = new Size(800, 450);
             Load += NetNodeEditor_Load;

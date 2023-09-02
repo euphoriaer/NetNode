@@ -22,28 +22,28 @@ namespace NetNodeLib
             this.Paint += NetNodeEditor_Paint;
             DrawingTools = new DrawingTools()
             {
-                Pen=new Pen(Color.Black,2),
-                SolidBrush=new SolidBrush(Color.Black),
+                Pen = new Pen(Color.Black, 2),
+                SolidBrush = new SolidBrush(Color.Black),
             };
         }
 
         public List<NetNode> GetChildrenNetNode(NetNode node)
         {
             //只有右侧连接的 视为children
-            List<NetNode> notes=new List<NetNode> ();
+            List<NetNode> notes = new List<NetNode>();
 
             for (int i = 0; i < node.RightDots.Count; i++)
             {
-                var connectDots= node.RightDots[i].GetConnectDots();
+                var connectDots = node.RightDots[i].GetConnectDots();
                 for (int j = 0; j < connectDots.Count; j++)
                 {
-                    var connectNode= connectDots[j].NetNode;
+                    var connectNode = connectDots[j].NetNode;
                     notes.Add(connectNode);
 
-                    var childrenNodes= GetChildrenNetNode(connectNode);
+                    var childrenNodes = GetChildrenNetNode(connectNode);
                     foreach (NetNode child in childrenNodes)
                     {
-                       notes.Add(child);
+                        notes.Add(child);
                     }
                 }
             }
@@ -88,7 +88,7 @@ namespace NetNodeLib
                 return;
             }
 
-            if (HideNodes.Contains(node)) 
+            if (HideNodes.Contains(node))
             {
                 HideNodes.Remove(node);
             }
@@ -105,7 +105,7 @@ namespace NetNodeLib
             {
                 Nodes.Add(node);
             }
-            
+
         }
 
         public bool HideNode(NetNode node)
