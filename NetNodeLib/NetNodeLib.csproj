@@ -6,6 +6,10 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <OutputType>Library</OutputType>
+    <Authors>euphoriaer</Authors>
+    <PackageProjectUrl>https://github.com/euphoriaer/NetNode</PackageProjectUrl>
+    <Description>支持net6.0的节点绘制工具</Description>
+    <RepositoryUrl>https://github.com/euphoriaer/NetNode</RepositoryUrl>
   </PropertyGroup>
 
 </Project>
